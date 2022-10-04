@@ -6,9 +6,9 @@ name: CI for coit-frontend
 on:
   # Triggers the workflow on push or pull request events but only for the "develop" branch
   push:
-    branches: [ "develop" ]
+    branches: [ "feature" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "feature" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,8 +16,8 @@ on:
 env:
   sonarscannerversion: 4.7.0.2747-linux
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: cluster-1    # Add your cluster name here.
-  GKE_ZONE: asia-south1-a   # Add your cluster zone here.
+  GKE_CLUSTER: cluster-2    # Add your cluster name here.
+  GKE_ZONE: us-central1-c  # Add your cluster zone here.
 
 jobs:
   buildandpush:
@@ -63,11 +63,11 @@ jobs:
 
       - name: Build the container Image
         run: | 
-          docker build coit-frontend -t coitlearning/coit-frontend:latest -f coit-frontend/Dockerfile-multistage
+          docker build coit-frontend -t chittiinfo/gba-coit-frontend:latest -f coit-frontend/Dockerfile-multistage
 
       - name: Push the container Image
         run: | 
-          docker push coitlearning/coit-frontend:latest
+          docker push chittiinfo/gba-coit-frontend:latest
 
       - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
         with:
@@ -84,3 +84,9 @@ jobs:
         run: | 
           cd kustomize/environments/preview
           kubectl apply -k .
+      
+      # - name: Delete preview namespace
+      #   run: | 
+      #     cd kustomize/environments/preview
+      #     kubectl apply -k .
+
